@@ -38,3 +38,4 @@
 *.elf
 *.map
 *makefile
+*.DS_Store
