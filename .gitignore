@@ -32,10 +32,8 @@
 *.app
 
 # Vex
-*.mk
 *.json
 *.bin
 *.elf
 *.map
-*makefile
 *.DS_Store
