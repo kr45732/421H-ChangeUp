@@ -72,6 +72,8 @@ void pre_auton(void) {
   }
 
   resetDriveEncoders();
+  InertialSensor.resetHeading();
+  InertialSensor.resetRotation();
 
   Brain.Screen.clearScreen();
   Controller.Screen.clearScreen();
@@ -95,14 +97,24 @@ void autonomous(void) {
   wait(20, msec);
   Controller.Screen.print("Running...");
 
+  resetDriveEncoders();
+  InertialSensor.resetHeading();
+  InertialSensor.resetRotation();
+  wait(20, msec);
+
   // -- Tower 1 -- //
-  strafe(30, 360, true);
+  strafe(30, 360, "left");
+  spinIntakes(900);
   rotateTo(315, 75);
-  move(600, 520);
+  move(580, 520); 
+  spinBottomRollers(900);
   wait(1, sec);
+  spinIntakes(0);
+  spinBottomRollers(0);
   // -- Tower 2 -- //
   move(-90, 520);
   rotateTo(270);
+  strafe(-61.5, 360, "right");
   // -- Tower 3 -- //
 
   // -- Misc -- //
@@ -190,10 +202,10 @@ int main() {
   Brain.Screen.released(userTouchCallbackReleased);
 
   // 421H banner in center of screen
-  // banner();
+  banner();
 
   // initial display
-  // displayButtonControls(0, false);
+  displayButtonControls(0, false);
 
   // Prevent main from exiting with an infinite loop.
   while (Competition.isAutonomous() && !Competition.isEnabled()) {

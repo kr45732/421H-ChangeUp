@@ -11,17 +11,17 @@ brain Brain;
 competition Competition;
 
 /* --- Motor constructors --- */
-motor FrontLeft = motor(PORT5, ratio18_1, false);
-motor FrontRight = motor(PORT10, ratio18_1, true);
-motor BackLeft = motor(PORT14, ratio18_1, false);
-motor BackRight = motor(PORT19, ratio18_1, true);
-motor LeftIntake = motor(PORT7, ratio18_1, true);
-motor RightIntake = motor(PORT6, ratio18_1, false);
+motor FrontLeft = motor(PORT11, ratio18_1, false);
+motor FrontRight = motor(PORT5, ratio18_1, true);
+motor BackLeft = motor(PORT20, ratio18_1, false);
+motor BackRight = motor(PORT10, ratio18_1, true);
+motor LeftIntake = motor(PORT6, ratio18_1, false);
+motor RightIntake = motor(PORT7, ratio18_1, true);
 motor BottomRoller = motor(PORT17, ratio18_1, false);
-motor TopRoller = motor(PORT20, ratio18_1, true);
+motor TopRoller = motor(PORT15, ratio18_1, false);
 
 /* --- Sonar sensor constructors --- */
-sonar LeftSonar = sonar(Brain.ThreeWirePort.A);
+sonar LeftSonar = sonar(Brain.ThreeWirePort.E);
 sonar RightSonar = sonar(Brain.ThreeWirePort.C);
 
 /* --- Limit switch constructor --- */

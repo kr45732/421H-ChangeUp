@@ -45,17 +45,25 @@ void strafe(int degrees, int degreesPerSecond) {
   wait(20, msec);
 } // Strafe using internal motor encoders
 
-void strafe(int inches, int degreesPerSecond, bool usingSonar) {
+void strafe(double inches, int degreesPerSecond, std::string sonarSide) {
   // positive degrees = strafe right
   // negative degrees = strafe left
-  int direction = abs(inches) / inches;
+  int direction = fabs(inches) / inches;
 
   InertialSensor.resetRotation();
 
-  while (LeftSonar.distance(distanceUnits::in) < abs(inches) - 2) {
-    moveStrafe(degreesPerSecond * direction - InertialSensor.rotation(),
-               degreesPerSecond * direction + InertialSensor.rotation());
-    wait(20, msec);
+  if (sonarSide == "right") {
+    while (RightSonar.distance(distanceUnits::in) < fabs(inches) - 2) {
+      moveStrafe(degreesPerSecond * direction - InertialSensor.rotation(),
+                 degreesPerSecond * direction + InertialSensor.rotation());
+      wait(20, msec);
+    }
+  }else{
+    while (LeftSonar.distance(distanceUnits::in) < fabs(inches) - 2) {
+      moveStrafe(degreesPerSecond * direction - InertialSensor.rotation(),
+                 degreesPerSecond * direction + InertialSensor.rotation());
+      wait(20, msec);
+    }
   }
 
   moveStrafe(-700 * direction, -700 * direction);
