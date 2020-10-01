@@ -103,20 +103,35 @@ void autonomous(void) {
   wait(20, msec);
 
   // -- Tower 1 -- //
-  strafe(30, 360, "left");
+  strafe(29, 360, "left");
   spinIntakes(900);
   rotateTo(315, 75);
   move(580, 520); 
   spinBottomRollers(900);
-  wait(1, sec);
+  wait(0.85, sec);
   spinIntakes(0);
   spinBottomRollers(0);
   // -- Tower 2 -- //
   move(-90, 520);
   rotateTo(270);
-  strafe(-61.5, 360, "right");
+  strafe(-62, 360, "right");
+  move(75, 520);
+  spinIntakes(900);
+  spinBottomRollers(900);
+  wait(0.5, sec);
+  spinIntakes(0);
+  spinBottomRollers(0);
   // -- Tower 3 -- //
-
+  // move(-90, 520);
+  //strafe(5, 360, "left"); //put a strafe using the left sonar here as it gets closer to the wall
+  // spinIntakes(900);
+  // rotateTo(225, 75);
+  // move(580, 520); //Make the distance less depending on movment
+  // spinBottomRollers(900);
+  // wait(0.85, sec); //adjust the time based on the movement
+  // spinIntakes(0);
+  // spinBottomRollers(0);
+  // move(-90, 900);
   // -- Misc -- //
 
   // while (true){
@@ -159,26 +174,28 @@ void usercontrol(void) {
     wait(25, msec);
   }*/
 
-  int speed = 800;
+  int speed = 17000;
   int blueQueue = 0;
   while (true) {
     if (Controller.ButtonR1.pressing()) {
-      spinIntakes(speed);
-      spinBottomRollers(speed);
-      Brain.Screen.printAt(20, 20, "Queue: %d", blueQueue);
-      Brain.Screen.printAt(20, 40, "Press: %d", LimitSwitch.value());
-      if (blueQueue == 0) {
-        if (VisionSensor.takeSnapshot(Vision_BLUE, 1) == 1) {
-          blueQueue = 1;
-        }
-      } else if (blueQueue == 1) {
-        if (LimitSwitch.pressing()) {
-          spinTopRollers(speed);
-          wait(500, msec);
-          spinTopRollers(0);
-          blueQueue = 0;
-        }
-      }
+      spinIntakes(1000);
+      spinBottomRollers(1000);
+      spinTopRollers(3000);
+      // Brain.Screen.printAt(20, 20, "Queue: %d", blueQueue);
+      // Brain.Screen.printAt(20, 40, "Press: %d", LimitSwitch.value());
+      // if (blueQueue == 0) {
+      //   if (VisionSensor.takeSnapshot(Vision_BLUE, 1) == 1) {
+      //     blueQueue = 1;
+      //   }
+      // } else if (blueQueue == 1) {
+      //   if (LimitSwitch.pressing()) {
+      //     spinTopRollers(speed);
+      //     wait(1000, msec);
+      //     spinTopRollers(0);
+      //     blueQueue = 0;
+      //   }
+      // }
+
     } else {
       spinIntakes(0);
       spinBottomRollers(0);
