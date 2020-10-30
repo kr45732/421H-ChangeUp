@@ -3,7 +3,7 @@
 /*    Author:       Krish Ranjan                                             */
 /*    Created:      Thu Aug 13 2020                                          */
 /*    Description:  Code for VEX Change Up 2020 - 2021                       */
-/*----------------------------------------------------------------------------*/
+/*---------------------------------------------------------------------------*/
 
 /* --- Includes --- */
 #include "vex.h"
@@ -92,6 +92,7 @@ void autonomous(void) {
   } else {
     numberplate(vex::color(0x00bfff));
   }
+
   wait(20, msec);
   Controller.Screen.clearLine(5);
   wait(20, msec);
@@ -101,46 +102,138 @@ void autonomous(void) {
   InertialSensor.resetHeading();
   InertialSensor.resetRotation();
   wait(20, msec);
+  
+  /* -- Tower 1 -- */
+  strafe(-14, 400, "right");
+  rotateTo(0);
 
-  // -- Tower 1 -- //
-  strafe(29, 360, "left");
-  spinIntakes(900);
-  rotateTo(315, 75);
-  move(580, 520); 
-  spinBottomRollers(900);
-  wait(0.85, sec);
-  spinIntakes(0);
-  spinBottomRollers(0);
-  // -- Tower 2 -- //
-  move(-90, 520);
-  rotateTo(270);
-  strafe(-62, 360, "right");
-  move(75, 520);
-  spinIntakes(900);
-  spinBottomRollers(900);
+  spinBottomRollers(1200);
+  spinTopRollers(1200);
   wait(0.5, sec);
+  spinTopRollers(0);
+  spinIntakes(1000);
+
+  move(750, 540);
   spinIntakes(0);
+  wait(0.25, seconds);
   spinBottomRollers(0);
-  // -- Tower 3 -- //
-  // move(-90, 520);
-  //strafe(5, 360, "left"); //put a strafe using the left sonar here as it gets closer to the wall
-  // spinIntakes(900);
-  // rotateTo(225, 75);
-  // move(580, 520); //Make the distance less depending on movment
-  // spinBottomRollers(900);
-  // wait(0.85, sec); //adjust the time based on the movement
-  // spinIntakes(0);
-  // spinBottomRollers(0);
-  // move(-90, 900);
-  // -- Misc -- //
 
-  // while (true){
-  //   Brain.Screen.clearScreen();
-  //   Brain.Screen.printAt(0, 20, "%0.2f", InertialSensor.heading());
-  //   wait(20, msec);
-  // }
+  rotateTo(47);
+
+  move(210, 450);
+
+  BottomRoller.spinFor(fwd, 460, degrees, 1000, velocityUnits::dps, false);
+  TopRoller.spinFor(fwd, 500, degrees, 1200, velocityUnits::dps);
+
+  /* -- Tower 2 -- */
+  move(-210, 450);
+  spinTopRollers(-500);
+  wait(0.35, msec);
+  spinTopRollers(0);
+
+  rotateTo(0);
+
+  strafe(-25, 400, "right");
+
+  rotateTo(0);
+
+  spinIntakes(1000);
+  spinBottomRollers(1200);
+  move(210, 450);
+  spinTopRollers(1200);
+  wait(0.2, sec);
+  spinTopRollers(0);
+  wait(1.2, sec);
+  spinTopRollers(-500);
+  spinBottomRollers(-500);
+  wait(0.4, seconds);
+  spinBottomRollers(0);
+  spinTopRollers(0);
+  spinIntakes(0);
+
+  rotateTo(0);
+
+  move(-130, 450);
+
+  rotateTo(270);
+
+  spinIntakes(1000);
+  spinBottomRollers(1200);
+  move(700, 450);
+  wait(0.5, sec);
+  spinTopRollers(1200);
+  wait(0.2, sec);
+  spinTopRollers(0);
+  spinIntakes(0);
+  wait(0.25, seconds);
+  spinBottomRollers(0);
+  rotateTo(0);
+  wait(0.25, sec);
+  strafe(62, 400, "right");
+  move(200, 450);
+  BottomRoller.spinFor(fwd, 600, degrees, 1200, velocityUnits::dps, false);
+  TopRoller.spinFor(fwd, 650, degrees, 1200, velocityUnits::dps);
+
+  /* -- Tower 3 -- */
+  move(-205, 450);
+  rotateTo(0);
+  strafe(-100, 400, "right");
+  rotateTo(0);
+
+  spinIntakes(1000);
+  spinBottomRollers(1200);
+  move(360, 450);
+  spinTopRollers(1200);
+  wait(0.2, sec);
+  spinTopRollers(0);
+  wait(1.3, sec);
+  spinIntakes(0);
+  wait(0.25, seconds);
+  spinBottomRollers(0);
+
+  rotateTo(0);
+
+  move(-180, 450);
+
+  rotateTo(310);
+
+  move(350, 450);
+
+  BottomRoller.spinFor(fwd, 400, degrees, 1200, velocityUnits::dps, false);
+  TopRoller.spinFor(fwd, 450, degrees, 1200, velocityUnits::dps);
+
+  /* -- Tower 4 -- */
+  move(-350, 450);
+
+  rotateTo(270);
+
+  strafe(-62, 400, "right");
+
+  rotateTo(270);
+
+  move(250, 450);
+  BottomRoller.spinFor(fwd, 500, degrees, 1200, velocityUnits::dps, false);
+  TopRoller.spinFor(fwd, 550, degrees, 1200, velocityUnits::dps);
+
+  /* -- Tower 4 -- */
+  move(-160, 450);
+  rotateTo(180);
+
+  spinBottomRollers(1200);
+  spinIntakes(1000);
+
+  move(750, 540);
+  spinIntakes(0);
+  wait(0.25, seconds);
+  spinBottomRollers(0);
+
+  rotateTo(225);
+
+  move(240, 450);
+
+  BottomRoller.spinFor(fwd, 460, degrees, 1000, velocityUnits::dps, false);
+  TopRoller.spinFor(fwd, 500, degrees, 1200, velocityUnits::dps);
 }
-
 /*---------------------------------------------------------------------------*/
 /*                              User Control Task                            */
 /*                                                                           */
@@ -149,65 +242,51 @@ void autonomous(void) {
 /*---------------------------------------------------------------------------*/
 
 void usercontrol(void) {
-  /* Controller.Screen.clearScreen();
-  while (1) {
+  int queue = 0;
+  while (true) {
     // Chassis
     chassis();
 
     // Intakes and rollers
-    int speed = 900;
-    if (Controller.ButtonR1.pressing()) {
-      BottomRoller.spin(fwd, speed, dps);
-      TopRoller.spin(fwd, speed, dps);
-      intakes(speed);
-    } else if (Controller.ButtonL1.pressing()) {
-      BottomRoller.spin(fwd, -speed, dps);
-      TopRoller.spin(fwd, -speed, dps);
-      intakes(-speed);
-    } else {
-      intakes(0);
-      BottomRoller.spin(fwd, 0, dps);
-      TopRoller.spin(fwd, 0, dps);
-    }
-
-    // Sleep for a short amount of time to prevent wasted resources
-    wait(25, msec);
-  }*/
-
-  int speed = 17000;
-  int blueQueue = 0;
-  while (true) {
     if (Controller.ButtonR1.pressing()) {
       spinIntakes(1000);
       spinBottomRollers(1000);
-      spinTopRollers(3000);
-      // Brain.Screen.printAt(20, 20, "Queue: %d", blueQueue);
-      // Brain.Screen.printAt(20, 40, "Press: %d", LimitSwitch.value());
-      // if (blueQueue == 0) {
-      //   if (VisionSensor.takeSnapshot(Vision_BLUE, 1) == 1) {
-      //     blueQueue = 1;
-      //   }
-      // } else if (blueQueue == 1) {
-      //   if (LimitSwitch.pressing()) {
-      //     spinTopRollers(speed);
-      //     wait(1000, msec);
-      //     spinTopRollers(0);
-      //     blueQueue = 0;
-      //   }
-      // }
+      spinTopRollers(1000);
+      Brain.Screen.printAt(20, 20, "Queue: %d", queue);
+      Brain.Screen.printAt(20, 40, "Press: %d", LimitSwitch.value());
+      
+      if (queue == 0) {
+        if (VisionSensor.takeSnapshot(Vision_BLUE, 1) == 1) {
+          queue = 1;
+        }
+      } else if (queue == 1) {
+        if (LimitSwitch.pressing()) {
+          spinTopRollers(-1000);
+          wait(1000, msec);
+          spinTopRollers(1000);
+          queue = 0;
+        }
+      }
 
+    } else if (Controller.ButtonL1.pressing()) {
+      spinIntakes(-1200);
+      spinBottomRollers(-1200);
+      spinTopRollers(-1200);
     } else {
       spinIntakes(0);
       spinBottomRollers(0);
       spinTopRollers(0);
     }
+
+    
+    // Sleep for a short amount of time to prevent wasted resources
     wait(20, msec);
   }
 }
 
 // Main will set up the competition functions and callbacks
 int main() {
-  // Run the pre-autonomous function
+  // Run the \pre-autonomous function
   pre_auton();
 
   // Set up callbacks for autonomous and driver control periods
@@ -235,7 +314,7 @@ int main() {
   }
 }
 
-// /* --- Brain LCD functions --- */
+/* --- Brain LCD functions --- */
 int findButton(int16_t xpos, int16_t ypos) {
   int nButtons = sizeof(rectangleButtons) / sizeof(rectangleButton);
 

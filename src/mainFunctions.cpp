@@ -6,16 +6,17 @@ using namespace vex;
 void move(int degrees, int degreesPerSecond) {
   // positive degrees = move forward
   // negative degrees = move backward
-  int direction = abs(degrees) / degrees;
+  int direction = abs(degrees) / degrees; // variable //
 
   resetDriveEncoders();
   InertialSensor.resetRotation();
 
   while (avgDriveEncoderValue() < abs(degrees)) {
-    moveForward(degreesPerSecond * direction - InertialSensor.rotation(),
-                degreesPerSecond * direction + InertialSensor.rotation());
+    moveForward(degreesPerSecond * direction - (InertialSensor.rotation() * 25),
+                degreesPerSecond * direction +
+                    (InertialSensor.rotation() * 25));
     wait(20, msec);
-  }
+  } // Conditional statment //
 
   moveForward(-600 * direction, -600 * direction);
   wait(125, msec);
@@ -46,19 +47,33 @@ void strafe(int degrees, int degreesPerSecond) {
 } // Strafe using internal motor encoders
 
 void strafe(double inches, int degreesPerSecond, std::string sonarSide) {
-  // positive degrees = strafe right
-  // negative degrees = strafe left
+  // positive inches = strafe right
+  // negative inches = strafe left
   int direction = fabs(inches) / inches;
 
   InertialSensor.resetRotation();
 
   if (sonarSide == "right") {
-    while (RightSonar.distance(distanceUnits::in) < fabs(inches) - 2) {
-      moveStrafe(degreesPerSecond * direction - InertialSensor.rotation(),
-                 degreesPerSecond * direction + InertialSensor.rotation());
-      wait(20, msec);
+    if (RightSonar.distance(distanceUnits::in) < fabs(inches) - 2) {
+      while (RightSonar.distance(distanceUnits::in) < fabs(inches) - 2) {
+        moveStrafe(degreesPerSecond * direction - InertialSensor.rotation(),
+                   degreesPerSecond * direction + InertialSensor.rotation());
+        wait(20, msec);
+      }
+    } else {
+      while (RightSonar.distance(distanceUnits::in) > fabs(inches) + 4) {
+        moveStrafe(degreesPerSecond * direction - InertialSensor.rotation(),
+                   degreesPerSecond * direction + InertialSensor.rotation());
+        wait(20, msec);
+      }
+      while (RightSonar.distance(distanceUnits::in) > fabs(inches) + 2) {
+        moveStrafe(
+            .2 * (degreesPerSecond * direction - InertialSensor.rotation()),
+            .2 * (degreesPerSecond * direction + InertialSensor.rotation()));
+        wait(20, msec);
+      }
     }
-  }else{
+  } else {
     while (LeftSonar.distance(distanceUnits::in) < fabs(inches) - 2) {
       moveStrafe(degreesPerSecond * direction - InertialSensor.rotation(),
                  degreesPerSecond * direction + InertialSensor.rotation());
@@ -76,7 +91,7 @@ void strafe(double inches, int degreesPerSecond, std::string sonarSide) {
 void rotateTo(double degrees, double speed) {
   double rightDeg = 0;
   double leftDeg = 0;
-  double difference = 0;
+  double difference = 0; // Variable that keeps track of distance from target
   bool turnLeft = false;
 
   if (InertialSensor.heading() < degrees) {
@@ -95,27 +110,29 @@ void rotateTo(double degrees, double speed) {
     difference = rightDeg;
   }
 
-  FrontLeft.spin(forward, speed, pct);
-  FrontRight.spin(reverse, speed, pct);
-  BackLeft.spin(forward, speed, pct);
-  BackRight.spin(reverse, speed, pct);
-  task::sleep(200);
+  if (difference > 30) {
+    FrontLeft.spin(forward, speed, pct);
+    FrontRight.spin(reverse, speed, pct);
+    BackLeft.spin(forward, speed, pct);
+    BackRight.spin(reverse, speed, pct);
+    task::sleep(200);
 
-  while (difference > 30) {
-    if (InertialSensor.heading() < degrees) {
-      if (turnLeft) {
-        difference = 360 + InertialSensor.heading() - degrees;
+    while (difference > 30) {
+      if (InertialSensor.heading() < degrees) {
+        if (turnLeft) {
+          difference = 360 + InertialSensor.heading() - degrees;
+        } else {
+          difference = degrees - InertialSensor.heading();
+        }
       } else {
-        difference = degrees - InertialSensor.heading();
+        if (turnLeft) {
+          difference = InertialSensor.heading() - degrees;
+        } else {
+          difference = 360 - (InertialSensor.heading() - degrees);
+        }
       }
-    } else {
-      if (turnLeft) {
-        difference = InertialSensor.heading() - degrees;
-      } else {
-        difference = 360 - (InertialSensor.heading() - degrees);
-      }
+      task::sleep(20);
     }
-    task::sleep(20);
   }
 
   FrontLeft.spin(forward, speed * 0.1, pct);
@@ -124,7 +141,14 @@ void rotateTo(double degrees, double speed) {
   BackRight.spin(reverse, speed * 0.1, pct);
 
   if (turnLeft) {
-    waitUntil(InertialSensor.heading() <= degrees);
+    int overshootError = 3;
+    if (0 <= degrees && degrees <= overshootError) {
+      waitUntil(((360 - overshootError) <= InertialSensor.heading() &&
+                 InertialSensor.heading() <= 360) ||
+                InertialSensor.heading() <= degrees);
+    } else {
+      waitUntil(InertialSensor.heading() <= degrees);
+    }
   } else {
     waitUntil(InertialSensor.heading() >= (degrees));
   }
@@ -167,9 +191,9 @@ void moveStrafe(int left, int right) {
 /* --- Driver period functions --- */
 void chassis(double forwardScale, double turnScale, double strafeScale,
              int deadZone) {
-  double forward = Controller.Axis3.position() * 1.5;
-  double turnVal = Controller.Axis4.position() * 1.5;
-  double strafe = Controller.Axis1.position() * 1.5;
+  double forward = Controller.Axis3.position();
+  double turnVal = 0; // Controller.Axis4.position();
+  double strafe = 0;  // Controller.Axis1.position();
 
   int frontLeftVoltage = forward + strafe + turnVal;
   int frontRightVoltage = forward - strafe - turnVal;
@@ -191,11 +215,12 @@ void chassis(double forwardScale, double turnScale, double strafeScale,
     FrontRight.spin(fwd, frontRightVoltage, rpm);
     BackLeft.spin(fwd, backLeftVoltage, rpm);
     BackRight.spin(fwd, backRightVoltage, rpm);
+
   } else {
-    FrontLeft.stop();
-    FrontRight.stop();
-    BackLeft.stop();
-    BackRight.stop();
+    FrontLeft.stop(brakeType::brake);
+    FrontRight.stop(brakeType::brake);
+    BackLeft.stop(brakeType::brake);
+    BackRight.stop(brakeType::brake);
   }
 } // Moving, rotating, and strafing for chassis
 
@@ -211,3 +236,29 @@ void spinBottomRollers(int speed) {
 void spinTopRollers(int speed) {
   TopRoller.spin(fwd, speed, dps);
 } // Spin top rollers at a certian dps
+
+void sortBalls(double totalTime, signature removeColor) {
+  auto startTime = std::chrono::high_resolution_clock::now();
+  auto currentTime = std::chrono::high_resolution_clock::now();
+  double duration =
+      std::chrono::duration<double>(currentTime - startTime).count();
+
+  while (duration < totalTime) {
+    int queue = 0;
+    if (queue == 0) {
+      if (VisionSensor.takeSnapshot(removeColor, 1) == 1) {
+        queue = 1;
+      }
+    } else if (queue == 1) {
+      if (LimitSwitch.pressing()) {
+        spinTopRollers(-1200);
+        wait(1000, msec);
+        spinTopRollers(1200);
+        queue = 0;
+      }
+    }
+    currentTime = std::chrono::high_resolution_clock::now();
+    duration = std::chrono::duration<double>(currentTime - startTime).count();
+  }
+}
+

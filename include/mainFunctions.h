@@ -15,3 +15,4 @@ void resetDriveEncoders();
 double avgDriveEncoderValue();
 void moveForward(int left, int right);
 void moveStrafe(int left, int right);
+void sortBalls(double totalTime, vex::vision::signature extakeColor);
