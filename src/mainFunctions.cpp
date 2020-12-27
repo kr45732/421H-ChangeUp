@@ -192,8 +192,8 @@ void moveStrafe(int left, int right) {
 void chassis(double forwardScale, double turnScale, double strafeScale,
              int deadZone) {
   double forward = Controller.Axis3.position();
-  double turnVal = 0; // Controller.Axis4.position();
-  double strafe = 0;  // Controller.Axis1.position();
+  double turnVal = Controller.Axis4.position();
+  double strafe = Controller.Axis1.position();
 
   int frontLeftVoltage = forward + strafe + turnVal;
   int frontRightVoltage = forward - strafe - turnVal;
